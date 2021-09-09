@@ -105,12 +105,13 @@ n=32    # We change the size of the first hidden layer [32, 64, 128, 256, 512]
 t=Timer.Timer()
 for i in range(5):
     
-    t.start() #We measure model construction and training time together
     model = NeuralNetwork(n).to(device)
     print(model)
 
     loss_fn = nn.CrossEntropyLoss() #We choose cross-entropy loss as loss function
     optimizer = torch.optim.SGD(model.parameters(), lr=1e-3) #Stochastic Gradient Descent with learning rate of 0.001
+    
+    t.start() #We measure only training time
     
     for r in range(epochs):
         print(f"Epoch {r+1}\n-------------------------------")
@@ -121,10 +122,50 @@ for i in range(5):
     diff=t.duration()
     results.append([diff,n])    #We save the results in a list
     n*=2
-    
+
+
+#Write results in a file
+file = open(r"results.txt","w")
+text=""
+for r in range(len(results)):
+    text += str(results[r][0]) +" "+ str(results[r][1]) +"\n"
+
+file.write(text)
+file.close()
+
+#Open file and retrieve results
+res = []
+file = file = open(r"results.txt","r")
+list=file.readlines()
+for l in list:
+    res.append(l.split(" "))
+
+#Transform the string pair list into 2 float list
+nodes=[]
+t2=[]
+for l in res:
+    nodes.append(float(l[1]))
+    t2.append(float(l[0]))
+
+#print(nodes)    For testing
+#print (t2)
+#print(res)
+
+#Construct graph
+plt.figure(1)
+plt.subplot(211)  
+plt.plot(nodes,t2)
+plt.show()
+
+
+
+
+
+
+'''
     
 # Printing results as text
-for i in range(len(results)):
+for i in range(len(res)):
     print(str(epochs)+" epochs took {0:.2f} seconds with {1:d} nodes for the first hidden layer".format(results[i][0],results[i][1]))
 
 #Saving model for future use
@@ -135,7 +176,7 @@ print("Saved PyTorch Model State to model.pth")
 model = NeuralNetwork()
 model.load_state_dict(torch.load("model.pth"))
 
-#Dictionary 
+#Dictionary for the label values 0 to 9
 classes = [
     "T-shirt/top",
     "Trouser",
@@ -156,7 +197,7 @@ with torch.no_grad():
     predicted, actual = classes[pred[0].argmax(0)], classes[y]
     print(f'Predicted: "{predicted}", Actual: "{actual}"')
 
-
+'''
 
     
 
