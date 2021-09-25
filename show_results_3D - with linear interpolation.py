@@ -83,8 +83,9 @@ print(Z)
 #Interpolation of new values
 xi=[]
 yi=[]
-for i in range(128):
+for i in range(nNodes[-1]/8):
     xi.append(8+8*i)
+for i in range(mNodes[-1]/8)):
     yi.append(8+8*i)
 triang = tri.Triangulation(X, Y)
 interpolator = tri.LinearTriInterpolator(triang, Z)
